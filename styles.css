@@ -32,12 +32,11 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,4 +136,44 @@ button:active {
 .win-cell {
   font-size: 130%;
   color: var(--sec-font);
+}
+
+dialog {
+  font-size: 1.25rem;
+  font-weight: normal;
+  padding: 3rem;
+
+  label {
+    display: block;
+    margin-bottom: 25px;
+  }
+
+  input {
+    border-radius: 5px;
+    height: 1.8rem;
+    background: var(--bg);
+    border: 2px solid var(--sec-font);
+    font-family: "Rubik", sans-serif;
+    font-size: 1rem;
+    color: var(--font);
+    padding-left: 7px;
+    margin-left: 5px;
+  }
+
+  input:focus {
+    border: 2px solid var(--font);
+    outline: none;
+  }
+
+  input::placeholder {
+    color: var(--placeholder);
+  }
+}
+
+.button-container {
+  display: flex;
+
+  button {
+    margin-right: 25px;
+  }
 }

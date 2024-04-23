@@ -29,6 +29,20 @@
       </div>
       <div class="customise">
         <button>Customise</button>
+        <dialog>
+          <label>
+            Change player 1 name:
+            <input type="text" name="player1name" placeholder="player 1 name">
+          </label>
+          <label>
+            Change player 2 name:
+            <input type="text" name="player2name" placeholder="player 2 name">
+          </label>
+          <div class="button-container">
+            <button autofocus class="close">Close</button>
+            <button autofocus class="submit">Submit</button>
+          </div>
+        </dialog>
       </div>
       <div class="player2">
         <div></div>
@@ -37,6 +51,12 @@
       <button class="restart">RESTART</button>
     </aside>
   </main>
+  <dialog class="result">
+    <p></p>
+    <div>
+      <button autofocus class="close">Close</button>
+    </div>
+  </dialog>
 </body>
 
 </html>

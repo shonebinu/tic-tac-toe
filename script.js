@@ -1,9 +1,11 @@
 const makeUser = function(name, marker) {
   const getName = () => name;
+  const setName = (newName) => name = newName;
   const getMarker = () => marker;
 
   return {
     getName,
+    setName,
     getMarker,
   };
 };
@@ -30,6 +32,13 @@ const domController = (function() {
   const cells = document.querySelectorAll(".board > div");
   const restartButton = document.querySelector(".restart");
   const playerDivs = document.querySelectorAll("[class^='player']");
+  const customiseButton = document.querySelector(".customise > button");
+  const customiseDialog = document.querySelector(".customise > dialog");
+  const customiseCloseDialog = customiseDialog.querySelector(".close");
+  const customiseSubmitDialog = customiseDialog.querySelector(".submit");
+  const resultDialog = document.querySelector(".result");
+  const resultDialogContent = resultDialog.querySelector("p");
+  const resultDialogCloseButton = resultDialog.querySelector(".close");
 
   const updateCell = (index, marker) => {
     if (cells[index].textContent === "") {
@@ -52,6 +61,53 @@ const domController = (function() {
     playerDivs[1].firstChild.textContent = player2.getName();
   };
 
+  const dialogController = (function() {
+    const player1name = document.querySelector("input[name='player1name']");
+    const player2name = document.querySelector("input[name='player2name']");
+
+    const resetInputs = () => {
+      player1name.value = "";
+      player2name.value = "";
+    };
+
+    const openDialog = () => {
+      customiseDialog.showModal();
+    };
+
+    const closeDialog = () => {
+      resetInputs();
+      customiseDialog.close();
+    };
+
+    const submitDialog = () => {
+      const player1value = player1name.value;
+      const player2value = player2name.value;
+      resetInputs();
+
+      if (player1value !== "") {
+        player1.setName(player1value);
+      }
+
+      if (player1value !== "") {
+        player2.setName(player2value);
+      }
+
+      updatePlayerName(player1, player2);
+      customiseDialog.close();
+    };
+
+    const showResultDialog = (message) => {
+      resultDialogContent.textContent = message;
+      resultDialog.showModal();
+    };
+
+    const hideResultDialog = () => {
+      resultDialog.close();
+    };
+
+    return { openDialog, closeDialog, submitDialog, showResultDialog, hideResultDialog };
+  })();
+
   const bindCellListeners = (playTurn) => {
     cells.forEach((cell, index) => {
       cell.addEventListener("click", () => {
@@ -73,18 +129,22 @@ const domController = (function() {
     });
   };
 
-  const bindListeners = (playTurn) => {
+  const bindListeners = (playTurn, player1, player2) => {
     bindCellListeners(playTurn);
     bindRestart();
 
-    customiseButton.addEventListener("click", () => {
-      customiseDialog.showModal();
+    customiseButton.addEventListener("click", dialogController.openDialog);
+    customiseSubmitDialog.addEventListener("click", () => {
+      dialogController.submitDialog(player1, player2);
     });
+    customiseCloseDialog.addEventListener("click", dialogController.closeDialog);
+
+    resultDialogCloseButton.addEventListener("click", dialogController.hideResultDialog);
 
     console.log("Listeners binded.");
   };
 
-  return { bindListeners, highlightWin, updatePlayerName };
+  return { bindListeners, highlightWin, updatePlayerName, showResultDialog: dialogController.showResultDialog };
 })();
 
 const gameController = (function() {
@@ -94,7 +154,7 @@ const gameController = (function() {
   const startGame = (player1, player2) => {
     currentPlayer = player1;
     domController.updatePlayerName(player1, player2);
-    domController.bindListeners(playTurn);
+    domController.bindListeners(playTurn, player1, player2);
     console.log(`${currentPlayer.getName()} starts the game.`);
   };
 
@@ -153,9 +213,11 @@ const gameController = (function() {
       if (winPattern) {
         domController.highlightWin(winPattern);
         console.log(`The winner of the game is ${currentPlayer.getName()}!`);
+        domController.showResultDialog(`${currentPlayer.getName()} has won the game!`);
         return;
       } else if (checkTie() === true) {
         console.log("The game end in a tie!");
+        domController.showResultDialog("The game ended in a tie!");
         return;
       }
 
