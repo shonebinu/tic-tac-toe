@@ -55,8 +55,7 @@ main {
 main section.board {
   display: grid;
   grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-  height: 70vh;
-  font-size: 8rem;
+  font-size: 5rem;
 
   div {
     aspect-ratio: 1;
@@ -134,7 +133,7 @@ button:active {
 }
 
 .win-cell {
-  font-size: 120%;
+  font-size: 110%;
   color: var(--sec-font);
 }
 
