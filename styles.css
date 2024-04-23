@@ -177,3 +177,7 @@ dialog {
     margin-right: 25px;
   }
 }
+
+.opaque {
+  opacity: .5;
+}

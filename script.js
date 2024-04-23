@@ -61,6 +61,22 @@ const domController = (function() {
     playerDivs[1].firstChild.textContent = player2.getName();
   };
 
+  const updatePlayerOpacity = () => {
+    playerDivs.forEach((playerDiv, index) => {
+      const currentPlayer = gameController.getCurrentPlayer();
+      if (currentPlayer === player1 && index === 1 || currentPlayer === player2 && index === 0) {
+        playerDiv.classList.add("opaque");
+      } else {
+        playerDiv.classList.remove("opaque");
+      }
+    });
+  };
+
+  const resetPlayerOpacity = () => {
+    playerDivs[1].classList.add("opaque");
+    playerDivs[0].classList.remove("opaque");
+  };
+
   const dialogController = (function() {
     const player1name = document.querySelector("input[name='player1name']");
     const player2name = document.querySelector("input[name='player2name']");
@@ -126,6 +142,8 @@ const domController = (function() {
       resetCells();
       gameBoard.resetBoard();
       gameController.restartGame();
+      resetPlayerOpacity();
+      document.querySelectorAll(".win-cell").forEach(cell => cell.classList.remove("win-cell"));
     });
   };
 
@@ -144,7 +162,13 @@ const domController = (function() {
     console.log("Listeners binded.");
   };
 
-  return { bindListeners, highlightWin, updatePlayerName, showResultDialog: dialogController.showResultDialog };
+  return {
+    bindListeners,
+    highlightWin,
+    updatePlayerName,
+    updatePlayerOpacity,
+    showResultDialog: dialogController.showResultDialog,
+  };
 })();
 
 const gameController = (function() {
@@ -162,7 +186,10 @@ const gameController = (function() {
 
   const isGameEnded = () => gameEnded;
 
-  const restartGame = () => gameEnded = false;
+  const restartGame = () => {
+    gameEnded = false;
+    currentPlayer = player1;
+  };
 
   const switchPlayer = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -222,6 +249,7 @@ const gameController = (function() {
       }
 
       switchPlayer();
+      domController.updatePlayerOpacity();
     } else {
       console.log("This cell has already been chosen. Please choose another one.");
     }
